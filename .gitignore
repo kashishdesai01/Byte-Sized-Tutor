@@ -1,0 +1,16 @@
+# Python/Backend
+backend/.venv/
+backend/__pycache__/
+backend/uploads/
+backend/vector_stores/
+backend/*.db
+.env
+
+# Node/Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+npm-debug.log
+
+# macOS
+.DS_Store
