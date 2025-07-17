@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../api';
 
-// Eye icons for password visibility toggle
 const EyeIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.432 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -44,18 +43,13 @@ function AuthPage({ onLoginSuccess }) {
     setMessage('');
     setError('');
 
-    // --- Logic for Registration ---
     if (!isLogin) {
-      // ✅ UPDATED: Sequential validation for a better user experience
-      
-      // Rule 1: Check if passwords match
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
         setIsLoading(false);
         return;
       }
 
-      // Rule 2: Check for password strength
       const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!passwordRegex.test(password)) {
         setError(
@@ -73,7 +67,6 @@ function AuthPage({ onLoginSuccess }) {
         return;
       }
       
-      // If all validation passes, proceed with API call
       try {
         const response = await fetch(`${API_URL}/register`, {
           method: 'POST',
@@ -92,7 +85,6 @@ function AuthPage({ onLoginSuccess }) {
         setIsLoading(false);
       }
     } 
-    // --- Logic for Login ---
     else {
       try {
         const response = await fetch(`${API_URL}/token`, {
