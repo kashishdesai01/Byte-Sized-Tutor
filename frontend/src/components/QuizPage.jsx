@@ -1,4 +1,3 @@
-// components/QuizPage.jsx
 import React from 'react';
 import { TrashIcon } from './icons.jsx';
 

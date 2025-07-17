@@ -12,13 +12,12 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10080 # Increased token lifetime
+ACCESS_TOKEN_EXPIRE_MINUTES = 10080 
 
 if SECRET_KEY is None:
     raise Exception("SECRET_KEY environment variable not set.")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# UPDATED: auto_error=False makes the token optional.
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 def verify_password(plain_password, hashed_password):
@@ -37,7 +36,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# This function can now be used for both public and private routes
 async def get_current_user(token: Optional[str] = Depends(oauth2_scheme)):
     if token is None:
         return None # No user is logged in
@@ -52,7 +50,6 @@ async def get_current_user(token: Optional[str] = Depends(oauth2_scheme)):
         email: Optional[str] = payload.get("sub")
         if email is None:
             raise credentials_exception
-        # In a real app, you'd fetch the user from the DB here
         return {"email": email}
     except JWTError:
         raise credentials_exception
@@ -62,14 +59,13 @@ def create_password_reset_token(email: str) -> str:
     """
     Generates a short-lived, secure JWT for password resets.
     """
-    # Token is valid for 15 minutes
     expires_delta = timedelta(minutes=15)
     expire = datetime.utcnow() + expires_delta
     
     to_encode = {
         "sub": email,
         "exp": expire,
-        "scope": "password_reset" # A specific "scope" to prevent misuse of the token
+        "scope": "password_reset" 
     }
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

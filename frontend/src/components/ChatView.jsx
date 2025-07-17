@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { API_URL, getAuthHeaders } from '../api';
 
-// A reusable button component for consistent styling
 const ActionButton = ({ onClick, disabled, children, colorClass }) => (
     <button
         onClick={onClick}
@@ -40,16 +39,16 @@ function ChatView({ activeDocument, token, onGenerateQuiz, openConfirmationModal
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [chatHistory]);
 
-    const handleAskQuestion = async (e) => { /* Your existing function here */ };
-    const handleSummarize = async () => { /* Your existing function here */ };
-    const handleLocalGenerateQuiz = async () => { /* Your existing function here */ };
-    const handleDeleteChat = () => { /* Your existing function here */ };
+    const handleAskQuestion = async (e) => { };
+    const handleSummarize = async () => { };
+    const handleLocalGenerateQuiz = async () => {  };
+    const handleDeleteChat = () => {  };
 
     return (
-        // ✅ UPDATED: Main chat area with a subtle background
+        
         <main className="w-2/3 flex flex-col h-full bg-slate-100">
             <div className="flex flex-col h-full m-4 bg-white rounded-lg shadow-lg border border-slate-200">
-                {/* ✅ UPDATED: Redesigned header */}
+                
                 <div className="flex justify-between items-center p-4 border-b border-slate-200">
                     <h2 className="text-lg font-semibold text-slate-800 truncate" title={activeDocument.filename}>{activeDocument.filename}</h2>
                     <div className="flex gap-2 flex-shrink-0">
@@ -59,7 +58,7 @@ function ChatView({ activeDocument, token, onGenerateQuiz, openConfirmationModal
                     </div>
                 </div>
 
-                {/* ✅ UPDATED: Redesigned chat bubbles */}
+                
                 <div className="flex-grow p-6 overflow-y-auto">
                     {chatHistory.map((msg, i) => (
                         <div key={i} className={`flex items-start gap-4 my-6 ${msg.role === 'human' ? 'justify-end' : 'justify-start'}`}>

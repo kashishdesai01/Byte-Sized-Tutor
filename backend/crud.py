@@ -1,4 +1,3 @@
-# backend/crud.py
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 import shutil, os, random
@@ -7,11 +6,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func
 
 
-# Local imports
 from . import models, schemas, auth
 from langchain_core.messages import HumanMessage, AIMessage
 
-# External library imports
 import fitz
 import docx
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -40,7 +37,7 @@ def get_document_from_db(db: Session, doc_id: int):
         raise HTTPException(status_code=404, detail="Document not found.")
     return document
 
-# --- Core Logic Functions ---
+
 async def create_document(db: Session, file: UploadFile, user: Optional[dict]):
     owner_id = None
     if user:
@@ -112,7 +109,6 @@ async def get_answer(db: Session, request: schemas.AskRequest, user: Optional[di
     )
     retriever = vector_store.as_retriever()
 
-    # UPDATED: This now uses the new, more specific schema for chat history
     chat_history_messages = [
         HumanMessage(content=msg.content) if msg.role == "human" else AIMessage(content=msg.content)
         for msg in request.chat_history or []
@@ -205,7 +201,6 @@ async def get_summary(db: Session, request: schemas.DocumentRequest):
 
     full_text = " ".join([doc.page_content for doc in docs])
 
-    # ✅ Friendly, structured prompt for ChatGPT-like summarization
     summary_prompt = PromptTemplate(
         input_variables=["text"],
         template="""
@@ -242,7 +237,6 @@ async def create_quiz(db: Session, request: schemas.DocumentRequest):
 
     parser = JsonOutputParser(pydantic_object=schemas.Quiz)
     
-    # UPDATED: This is the new, more universal and robust prompt.
     prompt = PromptTemplate(
     template="""
 You are a strict and intelligent quiz generation assistant. Your job is to create a high-quality, diverse 5-question multiple-choice quiz from the provided Source Text.
@@ -272,7 +266,7 @@ Now generate the quiz.
     return quiz_data
 
 def save_quiz_attempt(db: Session, user_id: int, request: schemas.SubmitQuizRequest):
-    # Create the main attempt record
+   
     db_attempt = models.QuizAttempt(
         document_id=request.document_id,
         user_id=user_id,
@@ -282,7 +276,7 @@ def save_quiz_attempt(db: Session, user_id: int, request: schemas.SubmitQuizRequ
     db.commit()
     db.refresh(db_attempt)
 
-    # Create a record for each answer in the attempt
+    
     for answer in request.answers:
         db_answer = models.QuizAnswer(
             attempt_id=db_attempt.id,
@@ -314,7 +308,6 @@ def delete_document(db: Session, document_id: int, user_id: int):
     if os.path.exists(vector_store_path):
         shutil.rmtree(vector_store_path) # Use rmtree to delete the folder
 
-    # Deleting the document will automatically cascade and delete chat/quiz history
     db.delete(document)
     db.commit()
     return {"message": "Document and all associated data deleted successfully."}
@@ -328,7 +321,6 @@ def delete_chat_history(db: Session, document_id: int, user_id: int):
     db.commit()
     return {"message": "Chat history deleted successfully."}
 
-# This function is now for deleting ALL quiz attempts for a document
 def delete_all_quiz_history(db: Session, document_id: int, user_id: int):
     document = db.query(models.Document).filter(models.Document.id == document_id, models.Document.owner_id == user_id).first()
     if not document:
@@ -449,7 +441,6 @@ def delete_flashcard_set(db: Session, set_id: int, user_id: int):
     if set_to_delete.user_id != user_id:
         raise HTTPException(status_code=403, detail="Not authorized to delete this flashcard set")
 
-    # The cascade="all, delete-orphan" in models.py will handle deleting the associated cards.
     db.delete(set_to_delete)
     db.commit()
     return
@@ -461,7 +452,6 @@ def delete_multiple_flashcard_sets(db: Session, item_ids: List[int], user_id: in
         models.FlashcardSet.user_id == user_id
     ).all()
 
-    # This check ensures the user isn't trying to delete items they don't own.
     if len(sets_to_delete) != len(set(item_ids)):
          raise HTTPException(status_code=403, detail="One or more flashcard sets not found or access denied")
 
@@ -481,7 +471,6 @@ def delete_all_flashcard_sets_for_document(db: Session, document_id: int, user_i
     if not document:
         raise HTTPException(status_code=404, detail="Document not found or you do not have permission")
 
-    # The cascade relationship on the Document model handles the deletion.
     document.flashcard_sets = []
     db.commit()
     return
@@ -495,7 +484,6 @@ def update_user_password(db: Session, user: models.User, new_password: str):
     return user
 
 def get_progress_report_for_document(db: Session, user_id: int, document_id: int):
-    # First, get all attempts for the user and document
     attempts = db.query(models.QuizAttempt).filter(
         models.QuizAttempt.user_id == user_id,
         models.QuizAttempt.document_id == document_id
@@ -511,7 +499,6 @@ def get_progress_report_for_document(db: Session, user_id: int, document_id: int
 
     total_quizzes_taken = len(attempts)
     
-    # Use a subquery to perform aggregations in the database
     stats = db.query(
         func.avg(models.QuizAttempt.score).label('average_score'),
         func.max(models.QuizAttempt.score).label('highest_score')
@@ -520,7 +507,6 @@ def get_progress_report_for_document(db: Session, user_id: int, document_id: int
         models.QuizAttempt.document_id == document_id
     ).one()
 
-    # Prepare the data for the time-series chart
     scores_over_time = [{"timestamp": attempt.timestamp, "score": attempt.score} for attempt in attempts]
 
     return {

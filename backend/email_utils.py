@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# This pulls the configuration from your .env file
 conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
@@ -21,7 +20,6 @@ async def send_password_reset_email(email: str, token: str):
     """
     Sends a password reset email to the user with a unique token link.
     """
-    # IMPORTANT: Update the frontend_url to match your React app's URL for the reset page
     frontend_url = "http://localhost:5173" 
     reset_link = f"{frontend_url}/reset-password?token={token}"
     

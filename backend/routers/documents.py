@@ -1,8 +1,7 @@
-# backend/routers/documents.py
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from .. import models, auth, crud, schemas # Import schemas
+from .. import models, auth, crud, schemas 
 from ..database import get_db
 
 router = APIRouter(
@@ -28,17 +27,13 @@ def get_user_documents(
     return crud.get_user_documents(db=db, user_email=current_user["email"])
 
 
-# ... (upload and get_user_documents endpoints remain the same)
 
-# NEW: Endpoint to get chat history for a document
 @router.get("/{document_id}/history", response_model=List[schemas.ChatMessage])
 def get_document_chat_history(
     document_id: int,
     db: Session = Depends(get_db),
-    # This could be protected if you only want owners to see history
-    # current_user: Optional[dict] = Depends(auth.get_current_user) 
 ):
-    # For now, we'll keep it public
+   
     return crud.get_chat_history(db=db, document_id=document_id)
 
 @router.delete("/{document_id}", status_code=200)

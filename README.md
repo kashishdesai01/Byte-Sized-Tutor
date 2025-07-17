@@ -21,12 +21,12 @@ This project demonstrates an end-to-end implementation of a modern AI system, fr
 
 ## Core Features
 
-* **📄 PDF & DOCX Document Processing:** Users can upload documents to create a personalized knowledge base for the application to work with.
-* **💬 Context-Aware Conversational Chat:** Engage in a dialogue with your documents. The system uses a RAG pipeline to provide answers based on the provided text and maintains conversation history for follow-up questions.
-* **🧠 Automated Quiz Generation:** Generate multiple-choice quizzes on-demand from the document's content to validate understanding.
-* **📇 On-Demand Flashcard Creation:** Automatically create flashcard sets for key terms and concepts found within the documents.
-* **📈 Quiz Performance Tracking & Visualization:** A progress dashboard tracks quiz scores over time, displaying key metrics like average score, highest score, and a performance trend chart.
-* **🔒 JWT-Based User Authentication:** A complete user management system with registration, login, and a secure "Forgot Password" email flow using JSON Web Tokens.
+* **PDF & DOCX Document Processing:** Users can upload documents to create a personalized knowledge base for the application to work with.
+* **Context-Aware Conversational Chat:** Engage in a dialogue with your documents. The system uses a RAG pipeline to provide answers based on the provided text and maintains conversation history for follow-up questions.
+* **Automated Quiz Generation:** Generate multiple-choice quizzes on-demand from the document's content to validate understanding.
+* **On-Demand Flashcard Creation:** Automatically create flashcard sets for key terms and concepts found within the documents.
+* **Quiz Performance Tracking & Visualization:** A progress dashboard tracks quiz scores over time, displaying key metrics like average score, highest score, and a performance trend chart.
+* **JWT-Based User Authentication:** A complete user management system with registration, login, and a secure "Forgot Password" email flow using JSON Web Tokens.
 
 ## Architecture & Tech Stack
 

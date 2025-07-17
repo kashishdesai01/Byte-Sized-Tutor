@@ -1,5 +1,3 @@
-# backend/routers/flashcards.py
-
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 from typing import List
@@ -11,7 +9,6 @@ router = APIRouter(
     tags=["Flashcards"]
 )
 
-# --- MOVED FROM INTERACTIONS.PY ---
 @router.post("/generate", response_model=schemas.FlashcardSetResponse)
 async def generate_flashcards(
     request: schemas.DocumentRequest,
@@ -23,7 +20,6 @@ async def generate_flashcards(
     user = crud.get_user_from_db(db, current_user["email"])
     return await crud.create_flashcards(db=db, document_id=request.document_id, user_id=user.id)
 
-# --- MOVED FROM INTERACTIONS.PY (and path adjusted) ---
 @router.get("/document/{document_id}", response_model=List[schemas.FlashcardSetResponse])
 def get_flashcard_sets(
     document_id: int,
@@ -35,7 +31,6 @@ def get_flashcard_sets(
     user = crud.get_user_from_db(db, current_user["email"])
     return crud.get_flashcard_sets_for_document(db=db, user_id=user.id, document_id=document_id)
 
-# --- NEW DELETION ENDPOINTS ---
 
 @router.delete("/set/{set_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_flashcard_set(
